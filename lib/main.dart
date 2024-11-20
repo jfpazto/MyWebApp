@@ -19,7 +19,10 @@ class MyPortfolioApp extends StatelessWidget {
           bodyText2: TextStyle(color: Colors.white70),
         ),
       ),
-      home: HomePage(),
+      initialRoute: '/home', // Ruta inicial de la aplicación
+      routes: {
+        '/home': (context) => HomePage(), // Define la ruta '/home'
+      },
     );
   }
 }
