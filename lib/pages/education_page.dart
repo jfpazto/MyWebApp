@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/custom_drawer.dart'; // 👈 Importamos el Drawer mejorado
+import '../widgets/custom_drawer.dart'; // Importamos el Drawer mejorado
 
 class EducationPage extends StatefulWidget {
   @override
@@ -40,17 +40,23 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
           animation: _shineAnimation,
           builder: (context, child) {
             return AppBar(
+              backgroundColor: Colors.blueGrey.shade900, // Cambia el color para que coincida con el diseño
+              elevation: 5,
               title: ShaderMask(
                 shaderCallback: (Rect bounds) {
                   return LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                     colors: [
-                      Colors.white.withOpacity(0.1),
-                      Colors.white.withOpacity(0.5),
-                      Colors.white.withOpacity(0.1),
+                      Colors.white.withOpacity(0.3),
+                      Colors.white.withOpacity(0.9),
+                      Colors.white.withOpacity(0.3),
                     ],
-                    stops: [(_shineAnimation.value - 0.5).clamp(0.0, 1.0), _shineAnimation.value.clamp(0.0, 1.0), (_shineAnimation.value + 0.5).clamp(0.0, 1.0)],
+                    stops: [
+                      (_shineAnimation.value - 0.5).clamp(0.0, 1.0),
+                      _shineAnimation.value.clamp(0.0, 1.0),
+                      (_shineAnimation.value + 0.5).clamp(0.0, 1.0),
+                    ],
                   ).createShader(bounds);
                 },
                 child: Text(
@@ -58,7 +64,6 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
               ),
-              backgroundColor: Colors.blueAccent,
               leading: IconButton(
                 icon: Icon(Icons.menu, color: Colors.white),
                 onPressed: () {
@@ -69,7 +74,7 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
           },
         ),
       ),
-      drawer: CustomDrawer(), // 👈 Usamos el nuevo Drawer aquí
+      drawer: CustomDrawer(),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -130,7 +135,7 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
   }
 }
 
-// 📌 Clase para cada ítem de educación
+// 📌 Componente para cada ítem de educación
 class EducationItem extends StatelessWidget {
   final String title;
   final String institution;
@@ -162,7 +167,7 @@ class EducationItem extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(icon, size: 30, color: Colors.blueAccent),
+                Icon(icon, size: 30, color: Colors.lightBlueAccent),
                 SizedBox(width: 10),
                 Expanded(
                   child: Text(
