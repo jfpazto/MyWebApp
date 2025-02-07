@@ -13,15 +13,15 @@ class _AboutPageState extends State<AboutPage> {
   bool isTyping = false;
   bool showContactButton = false;
 
-  final List<Map<String, dynamic>> chatMessages = [
-    {"text": "👋 ¡Hola! Soy Jonathan Páez.", "icon": Icons.person, "color": Colors.orange},
-    {"text": "💻 Desarrollador de software con pasión por la innovación.", "icon": Icons.code, "color": Colors.blueAccent},
-    {"text": "🚀 Me encanta crear experiencias digitales con Flutter y Backend.", "icon": Icons.rocket_launch, "color": Colors.redAccent},
-    {"text": "🎨 Diseño interfaces atractivas y funcionales.", "icon": Icons.palette, "color": Colors.purpleAccent},
-    {"text": "📡 Experiencia en desarrollo móvil, web y cloud computing.", "icon": Icons.cloud, "color": Colors.teal},
-    {"text": "🔥 Aprendiendo y mejorando cada día en nuevas tecnologías.", "icon": Icons.auto_graph, "color": Colors.amber},
-    {"text": "🤝 Me gusta colaborar en proyectos que impactan positivamente.", "icon": Icons.handshake, "color": Colors.green},
-    {"text": "📩 ¡Hablemos sobre cómo puedo ayudarte!", "icon": Icons.message, "color": Colors.cyan},
+  final List<String> chatMessages = [
+    "👋 ¡Hola! Soy Jonathan Páez.",
+    "💻 Desarrollador de software con pasión por la innovación.",
+    "🚀 Me encanta crear experiencias digitales con Flutter y Backend.",
+    "🎨 Diseño interfaces atractivas y funcionales.",
+    "📡 Experiencia en desarrollo móvil, web y cloud computing.",
+    "🔥 Aprendiendo y mejorando cada día en nuevas tecnologías.",
+    "🤝 Me gusta colaborar en proyectos que impactan positivamente.",
+    "📩 ¡Hablemos sobre cómo puedo ayudarte!"
   ];
 
   @override
@@ -42,7 +42,7 @@ class _AboutPageState extends State<AboutPage> {
 
       Future.delayed(Duration(milliseconds: 1800), () {
         setState(() {
-          messages.add(chatMessages[messageIndex]["text"]);
+          messages.add(chatMessages[messageIndex]);
           messageIndex++;
           isTyping = false;
         });
@@ -63,7 +63,7 @@ class _AboutPageState extends State<AboutPage> {
     bool isMobile = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
-      drawer: isMobile ? CustomNavigationDrawer() : null,
+      drawer: isMobile ? CustomNavigationDrawer() : null, // Drawer solo en móviles
       body: Row(
         children: [
           if (!isMobile) SizedBox(width: 250, child: CustomNavigationDrawer()),
@@ -78,37 +78,49 @@ class _AboutPageState extends State<AboutPage> {
                 ),
               ),
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: isMobile ? 12 : 32, vertical: 16),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 📌 Título fijo
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Text(
+                    // Barra superior con menú en móviles
+                    if (isMobile)
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.menu, color: Colors.lightBlueAccent, size: 30),
+                            onPressed: () {
+                              Scaffold.of(context).openDrawer(); // Abre el Drawer en móviles
+                            },
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            'Sobre mí',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.lightBlueAccent,
+                            ),
+                          ),
+                        ],
+                      )
+                    else
+                      Text(
                         'Sobre mí',
                         style: TextStyle(
-                          fontSize: isMobile ? 28 : 32,
+                          fontSize: 32,
                           fontWeight: FontWeight.bold,
                           color: Colors.lightBlueAccent,
                         ),
                       ),
-                    ),
+
                     Divider(color: Colors.lightBlueAccent.withOpacity(0.5), thickness: 1),
                     SizedBox(height: 16),
 
-                    // 📌 Contenedor de burbujas de chat
+                    // Contenedor de burbujas de chat
                     Expanded(
                       child: ListView(
                         children: [
-                          ...messages.asMap().entries.map((entry) {
-                            return _buildChatBubble(
-                              entry.value,
-                              chatMessages[entry.key]["icon"],
-                              chatMessages[entry.key]["color"],
-                              isMobile,
-                            );
-                          }).toList(),
+                          ...messages.map((msg) => _buildChatBubble(msg)).toList(),
                           if (isTyping) _buildTypingIndicator(),
                         ],
                       ),
@@ -116,7 +128,7 @@ class _AboutPageState extends State<AboutPage> {
 
                     SizedBox(height: 24),
 
-                    // 📌 Botón de contacto con animación de rebote
+                    // Botón de contacto con animación de rebote
                     if (showContactButton)
                       AnimatedContainer(
                         duration: Duration(milliseconds: 600),
@@ -135,7 +147,7 @@ class _AboutPageState extends State<AboutPage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blueAccent,
                               foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 24, vertical: 12),
+                              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
                           ),
@@ -151,35 +163,26 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  // 📌 Método para construir burbujas de chat con icono de color
-  Widget _buildChatBubble(String text, IconData icon, Color iconColor, bool isMobile) {
+  // 📌 Método para construir burbujas de chat
+  Widget _buildChatBubble(String text) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 6, horizontal: isMobile ? 10 : 16),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Row(
-          children: [
-            Icon(icon, color: iconColor, size: 24), // Icono de color
-            SizedBox(width: 8),
-            Flexible(
-              child: Container(
-                constraints: BoxConstraints(maxWidth: isMobile ? 280 : 450),
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.lightBlueAccent.withOpacity(0.8),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                    bottomRight: Radius.circular(12),
-                  ),
-                ),
-                child: Text(
-                  text,
-                  style: TextStyle(fontSize: isMobile ? 14 : 16, color: Colors.white),
-                ),
-              ),
+        child: Container(
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.lightBlueAccent.withOpacity(0.8),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12),
+              topRight: Radius.circular(12),
+              bottomRight: Radius.circular(12),
             ),
-          ],
+          ),
+          child: Text(
+            text,
+            style: TextStyle(fontSize: 16, color: Colors.white),
+          ),
         ),
       ),
     );
