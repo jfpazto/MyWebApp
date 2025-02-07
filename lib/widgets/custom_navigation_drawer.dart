@@ -11,72 +11,96 @@ class CustomNavigationDrawer extends StatefulWidget {
 }
 
 class _CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
-  // Índice del enlace seleccionado
   int _selectedIndex = 0;
-
-  // Índice del enlace que está siendo "hovered"
   int? _hoveredIndex;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xFF292A40),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.blueGrey.shade900, Colors.blueGrey.shade700],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black45,
+            blurRadius: 10,
+            spreadRadius: 2,
+            offset: Offset(2, 4),
+          ),
+        ],
+      ),
       child: Column(
         children: [
           // Encabezado con avatar
           Container(
-            padding: EdgeInsets.symmetric(vertical: 32), // Espaciado vertical
+            padding: EdgeInsets.symmetric(vertical: 32),
             child: Column(
               children: [
                 Container(
-                  width: 90 * 2, // Tamaño del círculo
-                  height: 90 * 2,
+                  width: 120, // Tamaño del círculo
+                  height: 120,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.white, // Borde blanco
+                      color: Colors.white.withOpacity(0.8), // Borde blanco translúcido
                       width: 4,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blueAccent.withOpacity(0.5),
+                        blurRadius: 10,
+                        spreadRadius: 2,
+                      ),
+                    ],
                     image: DecorationImage(
                       image: AssetImage('assets/images/Icon.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
-                SizedBox(height: 16), // Espaciado debajo del avatar
+                SizedBox(height: 16),
+                Text(
+                  'Jonathan',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ],
             ),
           ),
           // Opciones de navegación en la parte inferior
           Column(
             children: [
-              _buildNavItem('Jonathan', 0, context, HomePage()),
-              _buildNavItem('Sobre mí', 1, context, AboutPage()),
-              _buildNavItem('Educación', 2, context, EducationPage()),
-              _buildNavItem('Proyectos', 3, context, ProjectsPage()),
-              _buildNavItem('Contacto', 4, context, ContactPage()),
+              _buildNavItem('Sobre mí', Icons.person, 1, context, AboutPage()),
+              _buildNavItem('Educación', Icons.school, 2, context, EducationPage()),
+              _buildNavItem('Proyectos', Icons.work, 3, context, ProjectsPage()),
+              _buildNavItem('Contacto', Icons.contact_mail, 4, context, ContactPage()),
             ],
           ),
-          // Espaciado para colocar la línea más abajo
-          SizedBox(height: 80), // Ajusta este valor para aumentar o reducir la separación
-          // Línea con gradiente animado que ocupa todo el ancho
-          AnimatedGradientLine(), // Aquí añadimos la línea animada
+          Spacer(),
+          // Línea con gradiente animado
+          AnimatedGradientLine(),
         ],
       ),
     );
   }
 
-  // Widget para un enlace de navegación
-  Widget _buildNavItem(String title, int index, BuildContext context, Widget page) {
+  // Widget para un enlace de navegación con icono
+  Widget _buildNavItem(String title, IconData icon, int index, BuildContext context, Widget page) {
     return MouseRegion(
       onEnter: (_) {
         setState(() {
-          _hoveredIndex = index; // Marca este índice como "hovered"
+          _hoveredIndex = index;
         });
       },
       onExit: (_) {
         setState(() {
-          _hoveredIndex = null; // Limpia el índice "hovered"
+          _hoveredIndex = null;
         });
       },
       child: GestureDetector(
@@ -86,21 +110,30 @@ class _CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
           });
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => page));
         },
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 16), // Espaciado vertical
-          child: Center(
-            child: Text(
-              title,
-              style: TextStyle(
-                color: _selectedIndex == index
-                    ? Colors.white // Color cuando está seleccionado
-                    : _hoveredIndex == index
-                        ? Colors.blueAccent // Color cuando el cursor pasa por encima
-                        : Colors.grey, // Color por defecto
-                fontWeight: _selectedIndex == index ? FontWeight.bold : FontWeight.normal,
-                fontSize: 16, // Tamaño de letra
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 300),
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+          decoration: BoxDecoration(
+            color: _selectedIndex == index
+                ? Colors.blueAccent.withOpacity(0.3)
+                : _hoveredIndex == index
+                    ? Colors.blueAccent.withOpacity(0.1)
+                    : Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            children: [
+              Icon(icon, color: Colors.blueAccent),
+              SizedBox(width: 10),
+              Text(
+                title,
+                style: TextStyle(
+                  color: _selectedIndex == index ? Colors.white : Colors.grey[400],
+                  fontWeight: _selectedIndex == index ? FontWeight.bold : FontWeight.normal,
+                  fontSize: 16,
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),
@@ -138,8 +171,8 @@ class _AnimatedGradientLineState extends State<AnimatedGradientLine> with Single
       animation: _controller,
       builder: (context, child) {
         return Container(
-          height: 8, // Altura de la línea
-          width: double.infinity, // Ocupa todo el ancho disponible
+          height: 8,
+          width: double.infinity,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
