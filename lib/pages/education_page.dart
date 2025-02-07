@@ -14,7 +14,7 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
   void initState() {
     super.initState();
 
-    // ✨ Animación para el destello en la AppBar
+    // ✨ Animación para el destello en el título "Educación"
     _controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 1500),
@@ -36,7 +36,7 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
     bool isMobile = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
-      drawer: isMobile ? CustomNavigationDrawer() : null, // Drawer solo en móviles
+      drawer: isMobile ? CustomNavigationDrawer() : null, // Solo en móviles
       body: Builder(
         builder: (context) => Row(
           children: [
@@ -53,7 +53,7 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
                 ),
                 child: Column(
                   children: [
-                    // **Encabezado con botón de menú**
+                    // **Encabezado con botón de menú en móviles**
                     Container(
                       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                       child: Row(
@@ -68,18 +68,22 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
                           ShaderMask(
                             shaderCallback: (Rect bounds) {
                               return LinearGradient(
+                                colors: [
+                                  Colors.lightBlueAccent,
+                                  Colors.white,
+                                  Colors.lightBlueAccent,
+                                ],
                                 begin: Alignment.centerLeft,
                                 end: Alignment.centerRight,
-                                colors: [
-                                  Colors.white.withOpacity(0.3),
-                                  Colors.white.withOpacity(0.9),
-                                  Colors.white.withOpacity(0.3),
-                                ],
                               ).createShader(bounds);
                             },
                             child: Text(
                               'Educación',
-                              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white, // Color base, el shader lo modificará
+                              ),
                             ),
                           ),
                         ],
@@ -99,38 +103,7 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
                               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.lightBlueAccent),
                             ),
                             SizedBox(height: 20),
-                            EducationItem(
-                              title: 'Maestría en Ingeniería de Sistemas',
-                              institution: 'Universidad en España',
-                              date: '2025 - Presente',
-                              details: 'Especialización en análisis de datos y arquitectura de software.',
-                              certificateUrl: 'https://certificados.universidad.com/maestria',
-                              icon: Icons.school,
-                            ),
-                            EducationItem(
-                              title: 'Ingeniería de Sistemas',
-                              institution: 'Universidad Nacional',
-                              date: '2019 - 2024',
-                              details: 'Enfoque en desarrollo de software y sistemas distribuidos.',
-                              certificateUrl: 'https://certificados.universidad.com/ingenieria',
-                              icon: Icons.computer,
-                            ),
-                            EducationItem(
-                              title: 'Curso de Big Data y Hadoop',
-                              institution: 'Platzi',
-                              date: '2023',
-                              details: 'Conceptos avanzados de Big Data y procesamiento distribuido.',
-                              certificateUrl: 'https://platzi.com/cursos/hadoop/',
-                              icon: Icons.cloud,
-                            ),
-                            EducationItem(
-                              title: 'Certificación AWS Certified Solutions Architect',
-                              institution: 'Amazon Web Services',
-                              date: '2022',
-                              details: 'Diseño de arquitecturas en la nube con AWS.',
-                              certificateUrl: 'https://aws.amazon.com/certification/',
-                              icon: Icons.cloud_done,
-                            ),
+                            _buildAnimatedEducationList(),
                           ],
                         ),
                       ),
@@ -142,6 +115,64 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
           ],
         ),
       ),
+    );
+  }
+
+  // 📌 Animación suave al mostrar los elementos de educación
+  Widget _buildAnimatedEducationList() {
+    final List<EducationItem> educationItems = [
+      EducationItem(
+        title: 'Maestría en Ingeniería de Sistemas',
+        institution: 'Universidad en España',
+        date: '2025 - Presente',
+        details: 'Especialización en análisis de datos y arquitectura de software.',
+        certificateUrl: 'https://certificados.universidad.com/maestria',
+        icon: Icons.school,
+      ),
+      EducationItem(
+        title: 'Ingeniería de Sistemas',
+        institution: 'Universidad Nacional',
+        date: '2019 - 2024',
+        details: 'Enfoque en desarrollo de software y sistemas distribuidos.',
+        certificateUrl: 'https://certificados.universidad.com/ingenieria',
+        icon: Icons.computer,
+      ),
+      EducationItem(
+        title: 'Curso de Big Data y Hadoop',
+        institution: 'Platzi',
+        date: '2023',
+        details: 'Conceptos avanzados de Big Data y procesamiento distribuido.',
+        certificateUrl: 'https://platzi.com/cursos/hadoop/',
+        icon: Icons.cloud,
+      ),
+      EducationItem(
+        title: 'Certificación AWS Certified Solutions Architect',
+        institution: 'Amazon Web Services',
+        date: '2022',
+        details: 'Diseño de arquitecturas en la nube con AWS.',
+        certificateUrl: 'https://aws.amazon.com/certification/',
+        icon: Icons.cloud_done,
+      ),
+    ];
+
+    return Column(
+      children: List.generate(educationItems.length, (index) {
+        return TweenAnimationBuilder<double>(
+          duration: Duration(milliseconds: 800 + (index * 200)), // Diferentes tiempos de aparición
+          tween: Tween(begin: 0, end: 1),
+          curve: Curves.easeOut,
+          builder: (context, value, child) {
+            return Opacity(
+              opacity: value,
+              child: Transform.translate(
+                offset: Offset(0, (1 - value) * 20),
+                child: child,
+              ),
+            );
+          },
+          child: educationItems[index],
+        );
+      }),
     );
   }
 }
