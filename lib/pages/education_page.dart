@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/custom_drawer.dart'; // 👈 Importamos el Drawer mejorado
 
 class EducationPage extends StatefulWidget {
   @override
@@ -59,7 +60,7 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
               ),
               backgroundColor: Colors.blueAccent,
               leading: IconButton(
-                icon: Icon(Icons.menu, color: Colors.white), // Ícono de menú
+                icon: Icon(Icons.menu, color: Colors.white),
                 onPressed: () {
                   Scaffold.of(context).openDrawer();
                 },
@@ -68,7 +69,7 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
           },
         ),
       ),
-      drawer: _buildDrawer(context),
+      drawer: CustomDrawer(), // 👈 Usamos el nuevo Drawer aquí
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -85,7 +86,7 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
               children: [
                 Text(
                   '🎓 Mi Educación',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 87, 72, 172)),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.lightBlueAccent),
                 ),
                 SizedBox(height: 20),
                 EducationItem(
@@ -127,53 +128,9 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
       ),
     );
   }
-
-  Widget _buildDrawer(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blueAccent),
-            child: Text(
-              'Menú de Navegación',
-              style: TextStyle(color: Colors.white, fontSize: 22),
-            ),
-          ),
-          ListTile(
-            leading: Icon(Icons.home, color: Colors.blueAccent),
-            title: Text('Inicio'),
-            onTap: () {
-              Navigator.pushNamed(context, '/home');
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.school, color: Colors.blueAccent),
-            title: Text('Educación'),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.work, color: Colors.blueAccent),
-            title: Text('Proyectos'),
-            onTap: () {
-              Navigator.pushNamed(context, '/projects');
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.contact_mail, color: Colors.blueAccent),
-            title: Text('Contacto'),
-            onTap: () {
-              Navigator.pushNamed(context, '/contact');
-            },
-          ),
-        ],
-      ),
-    );
-  }
 }
 
+// 📌 Clase para cada ítem de educación
 class EducationItem extends StatelessWidget {
   final String title;
   final String institution;
