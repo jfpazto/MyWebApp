@@ -68,7 +68,7 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
           },
         ),
       ),
-      drawer: _buildDrawer(context), // Agregamos el Drawer de navegación
+      drawer: _buildDrawer(context),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -85,7 +85,7 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
               children: [
                 Text(
                   '🎓 Mi Educación',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 87, 72, 172)),
                 ),
                 SizedBox(height: 20),
                 EducationItem(
@@ -144,28 +144,28 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
             leading: Icon(Icons.home, color: Colors.blueAccent),
             title: Text('Inicio'),
             onTap: () {
-              Navigator.pushNamed(context, '/home'); // Asegúrate de definir la ruta en main.dart
+              Navigator.pushNamed(context, '/home');
             },
           ),
           ListTile(
             leading: Icon(Icons.school, color: Colors.blueAccent),
             title: Text('Educación'),
             onTap: () {
-              Navigator.pop(context); // Ya estamos en Educación, solo cerramos el menú
+              Navigator.pop(context);
             },
           ),
           ListTile(
             leading: Icon(Icons.work, color: Colors.blueAccent),
             title: Text('Proyectos'),
             onTap: () {
-              Navigator.pushNamed(context, '/projects'); // Ruta a Proyectos
+              Navigator.pushNamed(context, '/projects');
             },
           ),
           ListTile(
             leading: Icon(Icons.contact_mail, color: Colors.blueAccent),
             title: Text('Contacto'),
             onTap: () {
-              Navigator.pushNamed(context, '/contact'); // Ruta a Contacto
+              Navigator.pushNamed(context, '/contact');
             },
           ),
         ],
@@ -210,7 +210,7 @@ class EducationItem extends StatelessWidget {
                 Expanded(
                   child: Text(
                     title,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.lightBlueAccent),
                   ),
                 ),
               ],
