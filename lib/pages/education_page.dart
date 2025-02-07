@@ -124,14 +124,14 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
       EducationItem(
         title: 'Maestría en Ingeniería de Sistemas',
         institution: 'Universidad en España',
-        date: '2025 - Presente',
+        date: '2026 - Presente',
         details: 'Especialización en análisis de datos y arquitectura de software.',
         certificateUrl: 'https://certificados.universidad.com/maestria',
         icon: Icons.school,
       ),
       EducationItem(
         title: 'Ingeniería de Sistemas',
-        institution: 'Universidad Nacional',
+        institution: 'Escuela Colombiana de Ingenieria Julio Garavito',
         date: '2019 - 2024',
         details: 'Enfoque en desarrollo de software y sistemas distribuidos.',
         certificateUrl: 'https://certificados.universidad.com/ingenieria',

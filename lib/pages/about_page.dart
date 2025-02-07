@@ -15,13 +15,12 @@ class _AboutPageState extends State<AboutPage> {
 
   final List<String> chatMessages = [
     "👋 ¡Hola! Soy Jonathan Páez.",
-    "💻 Desarrollador de software con pasión por la innovación.",
-    "🚀 Me encanta crear experiencias digitales con Flutter y Backend.",
+    "💻 Ingeniero de sistemas, con mas de 4 años de experiencia en desarrollo seguro, hacking etico, liderasgo en proyectos.",
+    "🚀 Me encanta crear experiencias digitales, la seguridad informatica y la inteligencia artificial",
     "🎨 Diseño interfaces atractivas y funcionales.",
     "📡 Experiencia en desarrollo móvil, web y cloud computing.",
     "🔥 Aprendiendo y mejorando cada día en nuevas tecnologías.",
-    "🤝 Me gusta colaborar en proyectos que impactan positivamente.",
-    "📩 ¡Hablemos sobre cómo puedo ayudarte!"
+    "🤝 Me gusta colaborar en proyectos que impactan positivamente."
   ];
 
   @override
