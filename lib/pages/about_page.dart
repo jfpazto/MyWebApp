@@ -40,14 +40,14 @@ class _AboutPageState extends State<AboutPage> {
         isTyping = true;
       });
 
-      Future.delayed(Duration(milliseconds: 1800), () {
+      Future.delayed(Duration(milliseconds: 1200), () {
         setState(() {
           messages.add(chatMessages[messageIndex]);
           messageIndex++;
           isTyping = false;
         });
 
-        Future.delayed(Duration(milliseconds: 700), _showNextMessage);
+        Future.delayed(Duration(milliseconds: 500), _showNextMessage);
       });
     } else {
       Future.delayed(Duration(seconds: 1), () {
@@ -63,36 +63,36 @@ class _AboutPageState extends State<AboutPage> {
     bool isMobile = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
-      drawer: isMobile ? CustomNavigationDrawer() : null, // Drawer solo en móviles
-      body: Row(
-        children: [
-          if (!isMobile) SizedBox(width: 250, child: CustomNavigationDrawer()),
+      drawer: isMobile ? CustomNavigationDrawer() : null,
+      body: Builder( // 🔥 SOLUCIÓN: Builder proporciona el contexto adecuado para Scaffold
+        builder: (context) => Row(
+          children: [
+            if (!isMobile) SizedBox(width: 250, child: CustomNavigationDrawer()),
 
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF1B1E2F), Color(0xFF2A2D3E)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF1B1E2F), Color(0xFF2A2D3E)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Barra superior con menú en móviles
-                    if (isMobile)
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // **Encabezado con el botón de menú**
                       Row(
                         children: [
-                          IconButton(
-                            icon: Icon(Icons.menu, color: Colors.lightBlueAccent, size: 30),
-                            onPressed: () {
-                              Scaffold.of(context).openDrawer(); // Abre el Drawer en móviles
-                            },
-                          ),
-                          SizedBox(width: 8),
+                          if (isMobile)
+                            IconButton(
+                              icon: Icon(Icons.menu, color: Colors.lightBlueAccent, size: 30),
+                              onPressed: () {
+                                Scaffold.of(context).openDrawer(); // 🔥 Ahora esto funcionará
+                              },
+                            ),
                           Text(
                             'Sobre mí',
                             style: TextStyle(
@@ -102,68 +102,58 @@ class _AboutPageState extends State<AboutPage> {
                             ),
                           ),
                         ],
-                      )
-                    else
-                      Text(
-                        'Sobre mí',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.lightBlueAccent,
+                      ),
+
+                      Divider(color: Colors.lightBlueAccent.withOpacity(0.5), thickness: 1),
+                      SizedBox(height: 16),
+
+                      // **Burbujas de chat**
+                      Expanded(
+                        child: ListView(
+                          children: [
+                            ...messages.map((msg) => _buildChatBubble(msg)).toList(),
+                            if (isTyping) _buildTypingIndicator(),
+                          ],
                         ),
                       ),
 
-                    Divider(color: Colors.lightBlueAccent.withOpacity(0.5), thickness: 1),
-                    SizedBox(height: 16),
+                      SizedBox(height: 24),
 
-                    // Contenedor de burbujas de chat
-                    Expanded(
-                      child: ListView(
-                        children: [
-                          ...messages.map((msg) => _buildChatBubble(msg)).toList(),
-                          if (isTyping) _buildTypingIndicator(),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: 24),
-
-                    // Botón de contacto con animación de rebote
-                    if (showContactButton)
-                      AnimatedContainer(
-                        duration: Duration(milliseconds: 600),
-                        curve: Curves.elasticOut,
-                        transform: Matrix4.translationValues(0, showContactButton ? 0 : 20, 0),
-                        child: Center(
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              // Acción del botón
-                            },
-                            icon: Icon(Icons.email, size: 24, color: Colors.white),
-                            label: Text(
-                              "Contáctame 📩",
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blueAccent,
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      // **Botón de contacto con animación de rebote**
+                      if (showContactButton)
+                        AnimatedContainer(
+                          duration: Duration(milliseconds: 600),
+                          curve: Curves.elasticOut,
+                          transform: Matrix4.translationValues(0, showContactButton ? 0 : 20, 0),
+                          child: Center(
+                            child: ElevatedButton.icon(
+                              onPressed: () {},
+                              icon: Icon(Icons.email, size: 24, color: Colors.white),
+                              label: Text(
+                                "Contáctame 📩",
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blueAccent,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  // 📌 Método para construir burbujas de chat
+  // **Método para construir burbujas de chat**
   Widget _buildChatBubble(String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -174,9 +164,9 @@ class _AboutPageState extends State<AboutPage> {
           decoration: BoxDecoration(
             color: Colors.lightBlueAccent.withOpacity(0.8),
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12),
-              topRight: Radius.circular(12),
-              bottomRight: Radius.circular(12),
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+              bottomRight: Radius.circular(16),
             ),
           ),
           child: Text(
@@ -188,7 +178,7 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  // 📌 Método para el indicador de "escribiendo..."
+  // **Método para el indicador de "escribiendo..."**
   Widget _buildTypingIndicator() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -198,7 +188,7 @@ class _AboutPageState extends State<AboutPage> {
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: Colors.lightBlueAccent.withOpacity(0.8),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -215,10 +205,10 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  // 📌 Método para animar los puntos del indicador de escritura
+  // **Método para animar los puntos del indicador de escritura**
   Widget _animatedDot(int delay) {
     return TweenAnimationBuilder<double>(
-      duration: Duration(milliseconds: 1500),
+      duration: Duration(milliseconds: 1000),
       tween: Tween(begin: 0, end: 1),
       curve: Curves.easeInOut,
       builder: (context, value, child) {

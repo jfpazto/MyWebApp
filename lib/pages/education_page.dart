@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/custom_drawer.dart'; // Importamos el Drawer mejorado
+import '../widgets/custom_navigation_drawer.dart';
 
 class EducationPage extends StatefulWidget {
   @override
@@ -14,7 +14,7 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
   void initState() {
     super.initState();
 
-    // Animación para el destello de la AppBar
+    // ✨ Animación para el destello en la AppBar
     _controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 1500),
@@ -33,102 +33,113 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
+    bool isMobile = MediaQuery.of(context).size.width < 600;
+
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
-        child: AnimatedBuilder(
-          animation: _shineAnimation,
-          builder: (context, child) {
-            return AppBar(
-              backgroundColor: Colors.blueGrey.shade900, // Cambia el color para que coincida con el diseño
-              elevation: 5,
-              title: ShaderMask(
-                shaderCallback: (Rect bounds) {
-                  return LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      Colors.white.withOpacity(0.3),
-                      Colors.white.withOpacity(0.9),
-                      Colors.white.withOpacity(0.3),
-                    ],
-                    stops: [
-                      (_shineAnimation.value - 0.5).clamp(0.0, 1.0),
-                      _shineAnimation.value.clamp(0.0, 1.0),
-                      (_shineAnimation.value + 0.5).clamp(0.0, 1.0),
-                    ],
-                  ).createShader(bounds);
-                },
-                child: Text(
-                  'Educación',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+      drawer: isMobile ? CustomNavigationDrawer() : null, // Drawer solo en móviles
+      body: Builder(
+        builder: (context) => Row(
+          children: [
+            if (!isMobile) SizedBox(width: 250, child: CustomNavigationDrawer()),
+
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF1B1E2F), Color(0xFF2A2D3E)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    // **Encabezado con botón de menú**
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                      child: Row(
+                        children: [
+                          if (isMobile)
+                            IconButton(
+                              icon: Icon(Icons.menu, color: Colors.lightBlueAccent, size: 30),
+                              onPressed: () {
+                                Scaffold.of(context).openDrawer();
+                              },
+                            ),
+                          ShaderMask(
+                            shaderCallback: (Rect bounds) {
+                              return LinearGradient(
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                                colors: [
+                                  Colors.white.withOpacity(0.3),
+                                  Colors.white.withOpacity(0.9),
+                                  Colors.white.withOpacity(0.3),
+                                ],
+                              ).createShader(bounds);
+                            },
+                            child: Text(
+                              'Educación',
+                              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    Divider(color: Colors.lightBlueAccent.withOpacity(0.5), thickness: 1),
+
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '🎓 Mi Educación',
+                              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.lightBlueAccent),
+                            ),
+                            SizedBox(height: 20),
+                            EducationItem(
+                              title: 'Maestría en Ingeniería de Sistemas',
+                              institution: 'Universidad en España',
+                              date: '2025 - Presente',
+                              details: 'Especialización en análisis de datos y arquitectura de software.',
+                              certificateUrl: 'https://certificados.universidad.com/maestria',
+                              icon: Icons.school,
+                            ),
+                            EducationItem(
+                              title: 'Ingeniería de Sistemas',
+                              institution: 'Universidad Nacional',
+                              date: '2019 - 2024',
+                              details: 'Enfoque en desarrollo de software y sistemas distribuidos.',
+                              certificateUrl: 'https://certificados.universidad.com/ingenieria',
+                              icon: Icons.computer,
+                            ),
+                            EducationItem(
+                              title: 'Curso de Big Data y Hadoop',
+                              institution: 'Platzi',
+                              date: '2023',
+                              details: 'Conceptos avanzados de Big Data y procesamiento distribuido.',
+                              certificateUrl: 'https://platzi.com/cursos/hadoop/',
+                              icon: Icons.cloud,
+                            ),
+                            EducationItem(
+                              title: 'Certificación AWS Certified Solutions Architect',
+                              institution: 'Amazon Web Services',
+                              date: '2022',
+                              details: 'Diseño de arquitecturas en la nube con AWS.',
+                              certificateUrl: 'https://aws.amazon.com/certification/',
+                              icon: Icons.cloud_done,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              leading: IconButton(
-                icon: Icon(Icons.menu, color: Colors.white),
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-              ),
-            );
-          },
-        ),
-      ),
-      drawer: CustomDrawer(),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blueGrey.shade900, Colors.blueGrey.shade700],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '🎓 Mi Educación',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.lightBlueAccent),
-                ),
-                SizedBox(height: 20),
-                EducationItem(
-                  title: 'Maestría en Ingeniería de Sistemas',
-                  institution: 'Universidad en España',
-                  date: '2025 - Presente',
-                  details: 'Especialización en análisis de datos y arquitectura de software.',
-                  certificateUrl: 'https://certificados.universidad.com/maestria',
-                  icon: Icons.school,
-                ),
-                EducationItem(
-                  title: 'Ingeniería de Sistemas',
-                  institution: 'Universidad Nacional',
-                  date: '2019 - 2024',
-                  details: 'Enfoque en desarrollo de software y sistemas distribuidos.',
-                  certificateUrl: 'https://certificados.universidad.com/ingenieria',
-                  icon: Icons.computer,
-                ),
-                EducationItem(
-                  title: 'Curso de Big Data y Hadoop',
-                  institution: 'Platzi',
-                  date: '2023',
-                  details: 'Conceptos avanzados de Big Data y procesamiento distribuido.',
-                  certificateUrl: 'https://platzi.com/cursos/hadoop/',
-                  icon: Icons.cloud,
-                ),
-                EducationItem(
-                  title: 'Certificación AWS Certified Solutions Architect',
-                  institution: 'Amazon Web Services',
-                  date: '2022',
-                  details: 'Diseño de arquitecturas en la nube con AWS.',
-                  certificateUrl: 'https://aws.amazon.com/certification/',
-                  icon: Icons.cloud_done,
-                ),
-              ],
             ),
-          ),
+          ],
         ),
       ),
     );
