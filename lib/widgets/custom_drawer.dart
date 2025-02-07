@@ -7,25 +7,39 @@ class CustomDrawer extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.blue.shade800, Colors.blue.shade400],
+            colors: [Colors.blueGrey.shade900, Colors.blueGrey.shade700],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black45,
+              blurRadius: 10,
+              spreadRadius: 2,
+              offset: Offset(2, 4),
+            ),
+          ],
         ),
         child: Column(
           children: [
-            // Encabezado con avatar interactivo
+            // Encabezado con avatar
             UserAccountsDrawerHeader(
-              accountName: Text("Jonathan"),
-              accountEmail: Text("jfpazto@gmail.com"),
+              accountName: Text(
+                "Jonathan",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              accountEmail: Text(
+                "jfpazto@gmail.com",
+                style: TextStyle(color: Colors.grey[300]),
+              ),
               currentAccountPicture: GestureDetector(
                 onTap: () {
-                  // Acción al hacer clic en el avatar
                   print("Perfil seleccionado");
                 },
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
-                  child: Icon(Icons.person, size: 50, color: Colors.blue),
+                  radius: 35,
+                  child: Icon(Icons.person, size: 50, color: Colors.blueAccent),
                 ),
               ),
               decoration: BoxDecoration(
@@ -50,28 +64,44 @@ class CustomDrawer extends StatelessWidget {
   }
 
   Widget _buildNavItem(IconData icon, String title, BuildContext context, String route) {
-    return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, route);
+    return MouseRegion(
+      onEnter: (_) {
+        // Resaltar opción al pasar el mouse
       },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: Colors.white, size: 26),
-            SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+      onExit: (_) {
+        // Restaurar color original
+      },
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, route);
+        },
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 300),
+          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.blueGrey.shade800.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blueAccent.withOpacity(0.3),
+                blurRadius: 10,
+                spreadRadius: 1,
               ),
-            ),
-          ],
+            ],
+          ),
+          child: Row(
+            children: [
+              Icon(icon, color: Colors.blueAccent, size: 26),
+              SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
