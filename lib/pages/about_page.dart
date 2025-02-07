@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import '../widgets/custom_navigation_drawer.dart';
+import 'dart:async';
 
 class AboutPage extends StatefulWidget {
   @override
@@ -8,18 +8,21 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> {
-  List<Map<String, dynamic>> messages = [
-    {"text": "¡Hola! Soy Jonathan, un apasionado del desarrollo de software.", "icon": Icons.waving_hand, "color": Colors.yellow},
-    {"text": "Me encanta crear soluciones innovadoras con Flutter y Backend.", "icon": Icons.code, "color": Colors.blueAccent},
-    {"text": "También disfruto el diseño UI/UX, buscando siempre la mejor experiencia.", "icon": Icons.palette, "color": Colors.purpleAccent},
-    {"text": "Me interesa el análisis de datos y la inteligencia artificial.", "icon": Icons.trending_up, "color": Colors.greenAccent},
-    {"text": "Siempre estoy aprendiendo nuevas tecnologías y optimizando mi código.", "icon": Icons.lightbulb, "color": Colors.orangeAccent},
-    {"text": "¿Quieres conocer más? ¡No dudes en contactarme!", "icon": Icons.chat, "color": Colors.pinkAccent}
-  ];
-
-  int currentMessageIndex = 0;
-  List<Map<String, dynamic>> displayedMessages = [];
+  List<String> messages = [];
+  int messageIndex = 0;
   bool isTyping = false;
+  bool showContactButton = false;
+
+  final List<Map<String, dynamic>> chatMessages = [
+    {"text": "👋 ¡Hola! Soy Jonathan Páez.", "icon": Icons.person, "color": Colors.orange},
+    {"text": "💻 Desarrollador de software con pasión por la innovación.", "icon": Icons.code, "color": Colors.blueAccent},
+    {"text": "🚀 Me encanta crear experiencias digitales con Flutter y Backend.", "icon": Icons.rocket_launch, "color": Colors.redAccent},
+    {"text": "🎨 Diseño interfaces atractivas y funcionales.", "icon": Icons.palette, "color": Colors.purpleAccent},
+    {"text": "📡 Experiencia en desarrollo móvil, web y cloud computing.", "icon": Icons.cloud, "color": Colors.teal},
+    {"text": "🔥 Aprendiendo y mejorando cada día en nuevas tecnologías.", "icon": Icons.auto_graph, "color": Colors.amber},
+    {"text": "🤝 Me gusta colaborar en proyectos que impactan positivamente.", "icon": Icons.handshake, "color": Colors.green},
+    {"text": "📩 ¡Hablemos sobre cómo puedo ayudarte!", "icon": Icons.message, "color": Colors.cyan},
+  ];
 
   @override
   void initState() {
@@ -28,102 +31,116 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   void _startChatAnimation() {
-    Timer.periodic(Duration(milliseconds: 1700), (timer) {
-      if (currentMessageIndex < messages.length) {
+    Future.delayed(Duration(milliseconds: 1200), _showNextMessage);
+  }
+
+  void _showNextMessage() {
+    if (messageIndex < chatMessages.length) {
+      setState(() {
+        isTyping = true;
+      });
+
+      Future.delayed(Duration(milliseconds: 1800), () {
         setState(() {
-          isTyping = true;
+          messages.add(chatMessages[messageIndex]["text"]);
+          messageIndex++;
+          isTyping = false;
         });
 
-        Future.delayed(Duration(milliseconds: 1200), () {
-          setState(() {
-            displayedMessages.add(messages[currentMessageIndex]);
-            currentMessageIndex++;
-            isTyping = false;
-          });
+        Future.delayed(Duration(milliseconds: 700), _showNextMessage);
+      });
+    } else {
+      Future.delayed(Duration(seconds: 1), () {
+        setState(() {
+          showContactButton = true;
         });
-      } else {
-        timer.cancel();
-      }
-    });
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isMobile = MediaQuery.of(context).size.width < 600;
+
     return Scaffold(
+      drawer: isMobile ? CustomNavigationDrawer() : null,
       body: Row(
         children: [
-          // 📌 Barra de navegación fija
-          SizedBox(
-            width: 250,
-            child: CustomNavigationDrawer(),
-          ),
-          // 📌 Contenido principal
+          if (!isMobile) SizedBox(width: 250, child: CustomNavigationDrawer()),
+
           Expanded(
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.blueGrey.shade900, Colors.blueGrey.shade700],
+                  colors: [Color(0xFF1B1E2F), Color(0xFF2A2D3E)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(32.0),
+                padding: EdgeInsets.symmetric(horizontal: isMobile ? 12 : 32, vertical: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 📌 Título fijo con icono
-                    Row(
-                      children: [
-                        Icon(Icons.person, size: 40, color: Colors.lightBlueAccent),
-                        SizedBox(width: 10),
-                        Text(
-                          'Sobre mí',
-                          style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.lightBlueAccent,
-                          ),
+                    // 📌 Título fijo
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Text(
+                        'Sobre mí',
+                        style: TextStyle(
+                          fontSize: isMobile ? 28 : 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.lightBlueAccent,
                         ),
-                      ],
+                      ),
                     ),
                     Divider(color: Colors.lightBlueAccent.withOpacity(0.5), thickness: 1),
                     SizedBox(height: 16),
 
-                    // 📌 Contenedor del chat
+                    // 📌 Contenedor de burbujas de chat
                     Expanded(
                       child: ListView(
                         children: [
-                          ...displayedMessages.map((msg) => _buildChatBubble(msg)),
-                          if (isTyping) _buildTypingIndicator(), // Indicador de "escribiendo..."
+                          ...messages.asMap().entries.map((entry) {
+                            return _buildChatBubble(
+                              entry.value,
+                              chatMessages[entry.key]["icon"],
+                              chatMessages[entry.key]["color"],
+                              isMobile,
+                            );
+                          }).toList(),
+                          if (isTyping) _buildTypingIndicator(),
                         ],
                       ),
                     ),
 
                     SizedBox(height: 24),
 
-                    // 📌 Botón "Contáctame" con animación
-                    Center(
-                      child: TweenAnimationBuilder<double>(
-                        duration: Duration(seconds: 1),
-                        tween: Tween(begin: 0.8, end: 1.0),
-                        curve: Curves.easeInOut,
-                        builder: (context, scale, child) {
-                          return Transform.scale(scale: scale, child: child);
-                        },
-                        child: ElevatedButton.icon(
-                          onPressed: () {},
-                          icon: Icon(Icons.contact_mail, color: Colors.white),
-                          label: Text("Contáctame"),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.lightBlueAccent,
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    // 📌 Botón de contacto con animación de rebote
+                    if (showContactButton)
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: 600),
+                        curve: Curves.elasticOut,
+                        transform: Matrix4.translationValues(0, showContactButton ? 0 : 20, 0),
+                        child: Center(
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              // Acción del botón
+                            },
+                            icon: Icon(Icons.email, size: 24, color: Colors.white),
+                            label: Text(
+                              "Contáctame 📩",
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blueAccent,
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 24, vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
                           ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -134,48 +151,41 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  // 🟢 Widget para las burbujas de chat con iconos coloridos
-  Widget _buildChatBubble(Map<String, dynamic> message) {
+  // 📌 Método para construir burbujas de chat con icono de color
+  Widget _buildChatBubble(String text, IconData icon, Color iconColor, bool isMobile) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: EdgeInsets.symmetric(vertical: 6, horizontal: isMobile ? 10 : 16),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Container(
-          padding: EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.lightBlueAccent.withOpacity(0.9),
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12),
-              topRight: Radius.circular(12),
-              bottomRight: Radius.circular(12),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 4,
-                offset: Offset(2, 2),
-              )
-            ],
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(message["icon"], color: message["color"], size: 24), // 🎨 Ícono con color
-              SizedBox(width: 10),
-              Expanded(
+        child: Row(
+          children: [
+            Icon(icon, color: iconColor, size: 24), // Icono de color
+            SizedBox(width: 8),
+            Flexible(
+              child: Container(
+                constraints: BoxConstraints(maxWidth: isMobile ? 280 : 450),
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.lightBlueAccent.withOpacity(0.8),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
+                  ),
+                ),
                 child: Text(
-                  message["text"],
-                  style: TextStyle(fontSize: 18, color: Colors.white),
+                  text,
+                  style: TextStyle(fontSize: isMobile ? 14 : 16, color: Colors.white),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  // 🟡 Widget para el indicador de "escribiendo..."
+  // 📌 Método para el indicador de "escribiendo..."
   Widget _buildTypingIndicator() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -184,21 +194,17 @@ class _AboutPageState extends State<AboutPage> {
         child: Container(
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.lightBlueAccent.withOpacity(0.6),
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12),
-              topRight: Radius.circular(12),
-              bottomRight: Radius.circular(12),
-            ),
+            color: Colors.lightBlueAccent.withOpacity(0.8),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildDot(),
+              _animatedDot(0),
               SizedBox(width: 4),
-              _buildDot(delay: 300),
+              _animatedDot(200),
               SizedBox(width: 4),
-              _buildDot(delay: 600),
+              _animatedDot(400),
             ],
           ),
         ),
@@ -206,14 +212,17 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  // 🔵 Pequeño widget para los puntos animados del indicador de "escribiendo..."
-  Widget _buildDot({int delay = 0}) {
+  // 📌 Método para animar los puntos del indicador de escritura
+  Widget _animatedDot(int delay) {
     return TweenAnimationBuilder<double>(
-      duration: Duration(milliseconds: 1200), // ⏳ Más duración
-      tween: Tween(begin: 0.3, end: 1.0),
+      duration: Duration(milliseconds: 1500),
+      tween: Tween(begin: 0, end: 1),
       curve: Curves.easeInOut,
-      builder: (context, opacity, child) {
-        return Opacity(opacity: opacity, child: child);
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: (value < 0.5) ? 0.3 : 1,
+          child: child,
+        );
       },
       child: Container(
         width: 8,
@@ -223,11 +232,6 @@ class _AboutPageState extends State<AboutPage> {
           shape: BoxShape.circle,
         ),
       ),
-      onEnd: () {
-        Future.delayed(Duration(milliseconds: delay), () {
-          setState(() {});
-        });
-      },
     );
   }
 }
