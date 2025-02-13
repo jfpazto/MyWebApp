@@ -125,7 +125,7 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
         title: 'Maestría en Ingeniería de Sistemas',
         institution: 'Universidad en España',
         date: '2026 - Presente',
-        details: 'Especialización en análisis de datos y arquitectura de software.',
+        details: 'Especialización en análisis de datos y seguridad de la informacion.',
         certificateUrl: 'https://certificados.universidad.com/maestria',
         icon: Icons.school,
       ),

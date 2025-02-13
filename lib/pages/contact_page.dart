@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../widgets/custom_navigation_drawer.dart';
 
 class ContactPage extends StatelessWidget {
@@ -57,9 +58,9 @@ class ContactPage extends StatelessWidget {
                               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.lightBlueAccent),
                             ),
                             SizedBox(height: 20),
-                            _buildContactItem(Icons.email, 'Email', 'jfpazto@hotmail.com'),
-                            _buildContactItem(Icons.phone, 'Teléfono', '+573228526540'),
-                            _buildContactItem(Icons.web, 'Sitio Web', 'www.miportafolio.com'),
+                            _buildContactItem(Icons.email, 'Email', 'jfpazto@hotmail.com', null),
+                            _buildContactItem(Icons.phone, 'Teléfono', '+573228526540', 'tel:+573228526540'),
+                            _buildContactItem(Icons.code, 'GitHub', 'github.com/jfpazto', 'https://github.com/jfpazto'),
                           ],
                         ),
                       ),
@@ -74,23 +75,34 @@ class ContactPage extends StatelessWidget {
     );
   }
 
-  Widget _buildContactItem(IconData icon, String title, String info) {
-    return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      margin: EdgeInsets.symmetric(vertical: 12),
-      color: Colors.white.withOpacity(0.9),
-      child: ListTile(
-        leading: Icon(icon, color: Colors.lightBlueAccent, size: 30),
-        title: Text(
-          title,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.lightBlueAccent),
-        ),
-        subtitle: Text(
-          info,
-          style: TextStyle(fontSize: 16, color: Colors.black87),
+  Widget _buildContactItem(IconData icon, String title, String info, String? url) {
+    return GestureDetector(
+      onTap: url != null ? () => _launchURL(url) : null,
+      child: Card(
+        elevation: 5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        margin: EdgeInsets.symmetric(vertical: 12),
+        color: Colors.white.withOpacity(0.9),
+        child: ListTile(
+          leading: Icon(icon, color: Colors.lightBlueAccent, size: 30),
+          title: Text(
+            title,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.lightBlueAccent),
+          ),
+          subtitle: Text(
+            info,
+            style: TextStyle(fontSize: 16, color: Colors.black87),
+          ),
         ),
       ),
     );
+  }
+
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'No se pudo abrir el enlace: $url';
+    }
   }
 }

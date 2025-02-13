@@ -64,7 +64,7 @@ class HomePage extends StatelessWidget {
                         AnimatedTextKit(
                           animatedTexts: [
                             TypewriterAnimatedText(
-                              'Desarrollador de software',
+                              'Ingeniero en Big Data, Ciberseguridad y Desarrollo de Software',
                               textStyle: TextStyle(
                                 fontSize: isMobile ? 20 : 24, // Tamaño adaptable
                                 fontWeight: FontWeight.bold,

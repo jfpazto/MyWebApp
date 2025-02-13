@@ -15,11 +15,11 @@ class _AboutPageState extends State<AboutPage> {
 
   final List<String> chatMessages = [
     "👋 ¡Hola! Soy Jonathan Páez.",
-    "💻 Ingeniero de sistemas, con mas de 4 años de experiencia en desarrollo seguro, hacking etico, liderasgo en proyectos.",
-    "🚀 Me encanta crear experiencias digitales, la seguridad informatica y la inteligencia artificial",
-    "🎨 Diseño interfaces atractivas y funcionales.",
-    "📡 Experiencia en desarrollo móvil, web y cloud computing.",
-    "🔥 Aprendiendo y mejorando cada día en nuevas tecnologías.",
+    "💻 Ingeniero de Sistemas con más de cuatro años de experiencia en ingeniería de datos, ciberseguridad y desarrollo de software.",
+    "🚀 Actualmente me desempeño como Ingeniero de Datos, diseñando y optimizando arquitecturas para el procesamiento masivo de datos.",
+    "🎨 Experiencia en el desarrollo e implementación de pipelines de datos, integración de fuentes estructuradas y no estructuradas, y el uso de tecnologías Big Data como Hadoop, Spark y SQL.",
+    "📡 Apasionado por el análisis de datos, inteligencia artificial y ciberseguridad, con experiencia en la aplicación de técnicas OSINT para la obtención y análisis de información en fuentes abiertas. Habilidad en la ejecución de pruebas de penetración (Pentesting) en entornos Linux y Windows, siguiendo lineamientos de OWASP y MITRE ATT&CK.",
+    "🔥 Busco constantemente oportunidades para fusionar mis conocimientos en ingeniería de datos, inteligencia artificial y ciberseguridad, con el fin de aportar valor en la toma de decisiones estratégicas y en la protección de infraestructuras críticas.",
     "🤝 Me gusta colaborar en proyectos que impactan positivamente."
   ];
 
@@ -126,7 +126,9 @@ class _AboutPageState extends State<AboutPage> {
                           transform: Matrix4.translationValues(0, showContactButton ? 0 : 20, 0),
                           child: Center(
                             child: ElevatedButton.icon(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/contact');
+                              },
                               icon: Icon(Icons.email, size: 24, color: Colors.white),
                               label: Text(
                                 "Contáctame 📩",

@@ -25,7 +25,7 @@ class CustomDrawer extends StatelessWidget {
             // Encabezado con avatar
             UserAccountsDrawerHeader(
               accountName: Text(
-                "Jonathan",
+                "Jonathan Paez",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               accountEmail: Text(

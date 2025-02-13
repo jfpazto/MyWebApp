@@ -39,31 +39,36 @@ class _CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
             padding: EdgeInsets.symmetric(vertical: 32),
             child: Column(
               children: [
-                Container(
-                  width: 120, // Tamaño del círculo
-                  height: 120,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.8), // Borde blanco translúcido
-                      width: 4,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.blueAccent.withOpacity(0.5),
-                        blurRadius: 10,
-                        spreadRadius: 2,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+                  },
+                  child: Container(
+                    width: 120, // Tamaño del círculo
+                    height: 120,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.8), // Borde blanco translúcido
+                        width: 4,
                       ),
-                    ],
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/Icon.png'),
-                      fit: BoxFit.cover,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.blueAccent.withOpacity(0.5),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/Icon.png'),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
                 SizedBox(height: 16),
                 Text(
-                  'Jonathan',
+                  'Jonathan Paez',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

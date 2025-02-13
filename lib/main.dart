@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_website/pages/contact_page.dart';
 import 'pages/home.dart';
 
 void main() {
@@ -22,6 +23,7 @@ class MyPortfolioApp extends StatelessWidget {
       initialRoute: '/home', // Ruta inicial de la aplicación
       routes: {
         '/home': (context) => HomePage(), // Define la ruta '/home'
+        '/contact': (context) => ContactPage(),
       },
     );
   }
